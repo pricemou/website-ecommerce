@@ -77,5 +77,4 @@ class Signup(View):
                 erro_message = "Email must be char long"
             elif customer.isExists():
                 erro_message = 'Email Address Already Registered..'
-            
             return erro_message

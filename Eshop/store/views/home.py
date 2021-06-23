@@ -8,14 +8,20 @@ class Index(View):
     def post(self, request):
         product = request.POST.get('product')
         print("--- produit selectioner: ",product)
+        remove = request.POST.get('remove')
+        product = request.POST.get("Quantite de produit suprimer:",remove)
         cart = request.session.get('cart')
         if cart:
             quantity = cart.get(product)
             if quantity:
-                cart[product] = quantity + 1
+                if remove:
+                    cart[product] = quantity - 1
+                    
+                else:
+                    cart[product] = quantity + 1
             else:
                 cart[product] = 1
-        else:
+        else: 
             cart = {}
             cart[product] = 1
         
@@ -26,7 +32,6 @@ class Index(View):
 
     def get(self , request):
         products = None
-        request.session.clear()
         categories = Category.get_all_categories()
         categoryID = request.GET.get('category')
 
@@ -34,7 +39,7 @@ class Index(View):
         if categoryID:
             products = Product.get_all_products_by_categoryid(categoryID)
         else:
-            products = Product.get_all_products();
+            products = Product.get_all_products()
         data = {}
         data['products'] = products
         data['categories'] = categories
@@ -42,5 +47,3 @@ class Index(View):
         if request.session.get('email') == None:
             print("la presonne n'est connecter ?? ")
         return render(request, 'index.html', data)
-
-    
